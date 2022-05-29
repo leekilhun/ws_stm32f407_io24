@@ -1,0 +1,25 @@
+## 파일 무시 (test.txt) 
+
+
+## 다음과 같은 확장자는 전체 무시  
+*.text 
+*.exe 
+*.zip
+*.log
+*.bin
+*.launch
+*.chm
+*.cproject
+*.project
+*.fw
+
+## 폴더 무시
+backup/
+.vscode/
+.vs/
+.metadata/
+Debug/
+.settings/
+Templates/
+_htmresc/
+XYB-V10-200417/
