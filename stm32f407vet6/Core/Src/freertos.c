@@ -35,6 +35,18 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+extern CAN_HandleTypeDef hcan1;
+
+/* USER CODE BEGIN Private defines */
+extern CAN_FilterTypeDef canFilter1;
+extern CAN_RxHeaderTypeDef canRxHeader;
+extern CAN_TxHeaderTypeDef canTxHeader;
+extern uint8_t can1Rx0Data[8];
+extern uint32_t TxMailBox;
+extern uint8_t can1Tx0Data[8];
+
+static void canSendTest();
+
 
 /* USER CODE END PD */
 
@@ -109,7 +121,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of myTask02 */
-  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
+  osThreadDef(myTask02, StartTask02, osPriorityNormal, 0, 128);
   myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -133,7 +145,7 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
     osDelay(1000);
   }
   /* USER CODE END StartDefaultTask */
@@ -149,10 +161,30 @@ void StartDefaultTask(void const * argument)
 void StartTask02(void const * argument)
 {
   /* USER CODE BEGIN StartTask02 */
+  HAL_CAN_Start(&hcan1);
+
+  if (HAL_CAN_ConfigFilter(&hcan1, &canFilter1) == HAL_OK)
+  {
+    HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+  }
+
+/*  canTxHeader.StdId = 0x102;
+  canTxHeader.RTR = CAN_RTR_DATA;
+  canTxHeader.IDE = CAN_ID_STD;
+  canTxHeader.DLC = 8;
+  for (int i=0; i<8;i++) can1Tx0Data[i]++;
+
+  TxMailBox = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);
+  HAL_CAN_AddTxMessage(&hcan1, &canTxHeader, &can1Tx0Data[0], &TxMailBox);*/
+
+
   /* Infinite loop */
   for(;;)
   {
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+    canSendTest();
+
+
     osDelay(500);
   }
   /* USER CODE END StartTask02 */
@@ -161,4 +193,25 @@ void StartTask02(void const * argument)
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+  if (hcan->Instance == CAN1)
+  {
+    HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &canRxHeader, &can1Rx0Data[0]);
+  }
+}
+
+
+void canSendTest()
+{
+  canTxHeader.StdId = 0x102;
+  canTxHeader.RTR = CAN_RTR_DATA;
+  canTxHeader.IDE = CAN_ID_STD;
+  canTxHeader.DLC = 8;
+  for (int i=0; i<8;i++) can1Tx0Data[i]++;
+
+  TxMailBox = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);
+  HAL_CAN_AddTxMessage(&hcan1, &canTxHeader, &can1Tx0Data[0], &TxMailBox);
+
+}
 /* USER CODE END Application */

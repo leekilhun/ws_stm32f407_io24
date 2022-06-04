@@ -24,9 +24,6 @@
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
 
-/* External functions --------------------------------------------------------*/
-void SystemClock_Config(void);
-
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -59,9 +56,11 @@ void SystemClock_Config(void);
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+extern CAN_HandleTypeDef hcan1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -167,6 +166,34 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles CAN1 TX interrupts.
+  */
+void CAN1_TX_IRQHandler(void)
+{
+  /* USER CODE BEGIN CAN1_TX_IRQn 0 */
+
+  /* USER CODE END CAN1_TX_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan1);
+  /* USER CODE BEGIN CAN1_TX_IRQn 1 */
+
+  /* USER CODE END CAN1_TX_IRQn 1 */
+}
+
+/**
+  * @brief This function handles CAN1 RX0 interrupts.
+  */
+void CAN1_RX0_IRQHandler(void)
+{
+  /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
+
+  /* USER CODE END CAN1_RX0_IRQn 0 */
+  HAL_CAN_IRQHandler(&hcan1);
+  /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
+
+  /* USER CODE END CAN1_RX0_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART1 global interrupt.
   */
 void USART1_IRQHandler(void)
@@ -181,24 +208,17 @@ void USART1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles USB On The Go FS wake-up interrupt through EXTI line 18.
+  * @brief This function handles USART2 global interrupt.
   */
-void OTG_FS_WKUP_IRQHandler(void)
+void USART2_IRQHandler(void)
 {
-  /* USER CODE BEGIN OTG_FS_WKUP_IRQn 0 */
+  /* USER CODE BEGIN USART2_IRQn 0 */
 
-  /* USER CODE END OTG_FS_WKUP_IRQn 0 */
-  if ((&hpcd_USB_OTG_FS)->Init.low_power_enable) {
-    /* Reset SLEEPDEEP bit of Cortex System Control Register */
-    SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
-    SystemClock_Config();
-  }
-  __HAL_PCD_UNGATE_PHYCLOCK(&hpcd_USB_OTG_FS);
-  /* Clear EXTI pending bit */
-  __HAL_USB_OTG_FS_WAKEUP_EXTI_CLEAR_FLAG();
-  /* USER CODE BEGIN OTG_FS_WKUP_IRQn 1 */
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&huart2);
+  /* USER CODE BEGIN USART2_IRQn 1 */
 
-  /* USER CODE END OTG_FS_WKUP_IRQn 1 */
+  /* USER CODE END USART2_IRQn 1 */
 }
 
 /**

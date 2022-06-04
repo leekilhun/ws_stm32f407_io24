@@ -35,7 +35,7 @@ typedef enum
 typedef enum
 {
   CAN_NORMAL,
-  CAN_MONITOR,
+  CAN_SILENT,
   CAN_LOOPBACK
 }can_mode_t;
 
@@ -122,7 +122,7 @@ void     canErrPrint(uint8_t ch);
 bool     canUpdate(void);
 
 void     canAttachRxInterrupt(uint8_t ch, bool (*handler)(can_msg_t *arg));
-void     canDetachRxInterrupt(uint8_t ch);
+void     canDatachRxInterrupt(uint8_t ch);
 
 
 #endif

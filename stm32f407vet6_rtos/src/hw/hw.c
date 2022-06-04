@@ -51,9 +51,6 @@ bool hwInit(void)
   ret &= buzzerInit();
 #endif
 
-#ifdef _USE_HW_LED
-  ret &= ledInit();
-#endif
 
 #ifdef _USE_HW_FLASH
   ret &= flashInit();
