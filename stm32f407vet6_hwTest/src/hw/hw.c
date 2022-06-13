@@ -62,6 +62,7 @@ bool hwInit(void)
   ret &= i2cInit();
 #endif
 
+ret &=i2cIoInit();
 
 #ifdef _USE_HW_CAN
   ret &= canInit();

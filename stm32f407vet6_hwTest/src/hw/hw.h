@@ -24,6 +24,7 @@ extern "C" {
 #include "uart.h"
 #include "cli.h"
 #include "i2c.h"
+#include "i2c_io.h"
 #include "can.h"
 #include "spi.h"
 #include "flash.h"

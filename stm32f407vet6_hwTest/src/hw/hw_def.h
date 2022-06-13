@@ -67,6 +67,8 @@
 #define      HW_LOG_LIST_BUF_MAX    2048
 
 
+#define _USE_HW_I2C_IO
+
 //#define _USE_HW_I2C
 #define      HW_I2C_MAX_CH          2
 
